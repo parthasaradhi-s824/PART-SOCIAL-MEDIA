@@ -3,8 +3,6 @@ import sqlite3
 
 app = Flask(__name__)
 
-# ഇതിന് തൊട്ടുതാഴെയുള്ള വരി ചേർക്കുക
-init_db()
 def init_db():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
@@ -19,6 +17,8 @@ def init_db():
     conn.commit()
     conn.close()
 
+# ഫങ്ക്ഷൻ ഡിഫൈൻ ചെയ്തതിന് ശേഷം മാത്രം അതിനെ ഇവിടെ വിളിക്കുക
+init_db()
 @app.route('/')
 def home():
     conn = sqlite3.connect('database.db')
