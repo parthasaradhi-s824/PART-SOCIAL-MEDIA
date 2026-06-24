@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PART-SOCIAL-MEDIA</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        header { background-color: #007bff; color: white; padding: 15px; text-align: center; border-radius: 8px; font-size: 24px; font-weight: bold; }
+        .post-form, .post { background: white; padding: 15px; margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input, textarea { width: 95%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        button { background-color: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #218838; }
+        .username { font-weight: bold; color: #333; margin-bottom: 5px; }
+        .content { color: #555; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>PART SOCIAL MEDIA</header>
+
+    <div class="post-form">
+        <h3>പുതിയ പോസ്റ്റ് പങ്കുവെക്കൂ</h3>
+        <form action="/post" method="POST">
+            <input type="text" name="username" placeholder="നിങ്ങളുടെ പേര്" required>
+            <textarea name="content" rows="3" placeholder="എന്താണ് നിങ്ങളുടെ ചിന്ത?" required></textarea>
+            <button type="submit">Post</button>
+        </form>
+    </div>
+
+    <h2>Feed</h2>
+    {% for post in posts %}
+    <div class="post">
+        <div class="username">👤 {{ post.username }}</div>
+        <div class="content">{{ post.content }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
