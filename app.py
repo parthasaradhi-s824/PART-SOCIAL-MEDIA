@@ -1,15 +1,32 @@
 from flask import Flask, render_template, request, redirect, url_for
+import sqlite3
 
 app = Flask(__name__)
 
-# പോസ്റ്റുകൾ താല്ക്കാലികമായി സൂക്ഷിച്ചുവെക്കാനുള്ള ഒരു ലിസ്റ്റ് (Database-ന് പകരം)
-feed_posts = [
-    {"username": "ആദി", "content": "ഹലോ കൂട്ടുകാരേ, എന്റെ പുതിയ സോഷ്യൽ മീഡിയയിലേക്ക് സ്വാഗതം!"},
-    {"username": "അച്ചു", "content": "ഇത് വളരെ മികച്ചൊരു ആശയമാണ്, ആശംസകൾ!"}
-]
+# ഡാറ്റാബേസ് കണക്ട് ചെയ്യാനും ടേബിൾ ഉണ്ടാക്കാനുമുള്ള ഫങ്ക്ഷൻ
+def init_db():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS posts (
+            id INTEGER PRIMARY KEY AUTO_INCREMENT,
+            username TEXT,
+            content TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
 @app.route('/')
 def home():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    # ഡാറ്റാബേസിൽ നിന്ന് എല്ലാ പോസ്റ്റുകളും എടുക്കുന്നു
+    cursor.execute('SELECT id, username, content FROM posts ORDER BY id DESC')
+    rows = cursor.fetchall()
+    conn.close()
+    
+    feed_posts = [{"id": row[0], "username": row[1], "content": row[2]} for row in rows]
     return render_template('index.html', posts=feed_posts)
 
 @app.route('/post', methods=['POST'])
@@ -18,10 +35,23 @@ def create_post():
     text = request.form.get('content')
     
     if user and text:
-        # പുതിയ പോസ്റ്റ് ലിസ്റ്റിലേക്ക് ചേർക്കുന്നു
-        feed_posts.insert(0, {"username": user, "content": text})
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO posts (username, content) VALUES (?, ?)', (user, text))
+        conn.commit()
+        conn.close()
         
     return redirect(url_for('home'))
 
+@app.route('/delete/<int:post_id>', methods=['POST'])
+def delete_post(post_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM posts WHERE id = ?', (post_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('home'))
+
 if __name__ == '__main__':
+    init_db()
     app.run(debug=True)
