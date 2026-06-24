@@ -3,6 +3,8 @@ import sqlite3
 
 app = Flask(__name__)
 
+# ഇതിന് തൊട്ടുതാഴെയുള്ള വരി ചേർക്കുക
+init_db()
 def init_db():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
