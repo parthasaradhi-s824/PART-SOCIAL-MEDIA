@@ -1,2 +1,4 @@
-gunicorn
 flask
+gunicorn
+flask-login
+authlib
