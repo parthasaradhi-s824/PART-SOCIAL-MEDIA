@@ -3,13 +3,13 @@ import sqlite3
 
 app = Flask(__name__)
 
-# ഡാറ്റാബേസ് കണക്ട് ചെയ്യാനും ടേബിൾ ഉണ്ടാക്കാനുമുള്ള ഫങ്ക്ഷൻ
 def init_db():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
+    # ഇവിടെ AUTOINCREMENT സ്പേസ് ഇല്ലാതെ തിരുത്തിയിട്ടുണ്ട്
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS posts (
-            id INTEGER PRIMARY KEY AUTO_INCREMENT,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT,
             content TEXT
         )
@@ -21,7 +21,6 @@ def init_db():
 def home():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
-    # ഡാറ്റാബേസിൽ നിന്ന് എല്ലാ പോസ്റ്റുകളും എടുക്കുന്നു
     cursor.execute('SELECT id, username, content FROM posts ORDER BY id DESC')
     rows = cursor.fetchall()
     conn.close()
